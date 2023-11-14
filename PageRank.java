@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.LinkedList;
 public class PageRankNode { //we are doing a class now because Louis said so
 	//name of the thing (eg. Dolphin named "Double")
 	public String name;
@@ -8,7 +9,7 @@ public class PageRankNode { //we are doing a class now because Louis said so
 	//page rank after step
 	public float newPRScore;
 	//list of a node's links
-	public PageRankNode[] incomingLinks;
+	public LinkedList<PageRankNode> incomingLinks;
 	public int nodeTotal;
 	public bool repeating;
 	/**
@@ -16,7 +17,7 @@ public class PageRankNode { //we are doing a class now because Louis said so
 	
 	**/
 	public PageRankNode(String name, int nodeTotal) {
-		/* makes all nodes which we will then connect */
+		/* makes 1 node which we will then connect */
 
 		//make name a global value
 		this.name = name;
@@ -25,25 +26,6 @@ public class PageRankNode { //we are doing a class now because Louis said so
 		oldPRScore = 1/nodeTotal;
 		newPRScore = 0;
 		repeating = false;
-		//scanner to read file
-		//Scanner scanner = new Scanner(fileName);
-		//shows that commas seperate values
-		//scanner.useDelimiter(",");
-		//while there is stuff left to read
-		//while(scanner.hasNext()) {
-			//increment total
-		//	total += 1;
-			//find name of current node
-		//	String current = scanner.next();
-			//if it is the one we are looking for
-		//	if(current == name) {
-				//read 0 to get rid of it
-				//add to link_info
-				//read next 0 to get rid of it
-			//}
-			//old pr is 1/total
-			//new pr is 0 for now
-		//}
 		
 		
 	}
@@ -51,6 +33,9 @@ public class PageRankNode { //we are doing a class now because Louis said so
 	public void addConnection(PageRankNode connect){
 		/* make a connection from current node to "connect" node */
 
+	}
+	public void StartStep(int nodeTotal){
+		oldPRScore = 1/nodeTotal;
 	}
 
 	public void PageRankStep(){
@@ -74,6 +59,49 @@ public class PageRankNode { //we are doing a class now because Louis said so
 	public static void main(String[] args) throws FileNotFoundException {
 		//Create fileInputStream
 
+//scan file in
+			//scanner to read file
+		Scanner scanner = new Scanner(fileName);
+			//shows that commas seperate values
+		scanner.useDelimiter(",");
+			//while there is stuff left to read
+
+		//define variables for while loop
+		String node1;
+		int value1;
+		String node2;
+		int value2;
+		LinkedList<PageRankNode> nodes;
+		while(scanner.hasNext()) {
+				//increment total
+			int totalNodes += 1;
+				//find name of current node
+			node1 = scanner.next();
+			//gives first 0
+			value1 = scanner.next();
+			node2 = scanner.next();
+			value2 = scanner.next()
+			//if node already exists
+			if(nodes.contains(node1)){
+				//add connection to node (possibly double sided?)
+				//if 2 sided
+				node1.addConnection(node2);
+
+				if(value1 == value2 && nodes.contains(node2)) node2.addConnection(node1);
+				else if (value1 == value2) {
+					//create node2
+
+					//connect node2 to node1
+					node2.addConnection(node1);
+				}
+				else; //do nothing
+			}
+
+		}
+			//else
+				//create node, add connection(Double sided?)
+	}
+
 		//Every 4 values is 	
 			//1st name
 			//2nd 0 or 1
@@ -93,5 +121,3 @@ public class PageRankNode { //we are doing a class now because Louis said so
 		//happy swenson
 	}
 }
-
-
