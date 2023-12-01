@@ -5,102 +5,151 @@ public class PageRankNode { //we are doing a class now because Louis said so
 	//name of the thing (eg. Dolphin named "Double")
 	public String name;
 	//page rank before step
-	public float oldPRScore;
+	public double oldPRScore;
 	//page rank after step
-	public float newPRScore;
+	public double newPRScore;
 	//list of a node's links
 	public LinkedList<PageRankNode> incomingLinks;
-	public int nodeTotal;
-	public bool repeating;
+	public boolean repeating;
+	public int numOutgoing;
 	/**
 	Reads a file from the input and creates a hashmap representation
 	
 	**/
-	public PageRankNode(String name, int nodeTotal) {
+	public PageRankNode(String name) {
 		/* makes 1 node which we will then connect */
 
 		//make name a global value
 		this.name = name;
 		//keep track of total nodes to make first page rank (1/total)
-		this.nodeTotal = nodeTotal;
-		oldPRScore = 1/nodeTotal;
-		newPRScore = 0;
+		oldPRScore = -1;
+		newPRScore = -1;
 		repeating = false;
+		incomingLinks = new LinkedList<PageRankNode>();
+		numOutgoing = 0;
 		
 		
 	}
 	//add a connection from current node to inputed node
 	public void addConnection(PageRankNode connect){
 		/* make a connection from current node to "connect" node */
-
+		incomingLinks.add(connect);
 	}
-	public void StartStep(int nodeTotal){
+	public void startStep(int nodeTotal){
 		oldPRScore = 1/nodeTotal;
 	}
 
-	public void PageRankStep(){
+	public void pageRankStep(int numNodes){
 		/*view page rank of incoming nodes and calculate new page rank*/
-
 		//incomingLinks[i].oldPRScore for each incoming
-
-		//add  into a sum variable
-
-		//normalize
-
-		//put into newPRScore
+		float incomScore = 0;
+		for(int i = 0; i < incomingLinks.size(); i++) {
+			//if uninitialized, newPRScore sends back our error value
+			if(incomingLinks.get(i).oldPRScore == -1) {
+				newPRScore = -1;
+				return;
+			}
+			//add into a sum variable
+			//PR(wi)/c(wi)
+			incomScore += incomingLinks.get(i).oldPRScore / incomingLinks.get(i).numOutgoing;
+		}
+		//dampen
+		numNodes += 0.0;
+		double dampAdd = 0.15/numNodes;
+		double dampScore = dampAdd + 0.15*(incomScore);
+		oldPRScore = dampScore;
 	}
 
 	public void endStep(){
 		/* change oldPRScore to newPRScore for one node */
 		//check if values are the same
+		if (oldPRScore == newPRScore) {
 			//make repeating true
+			repeating = true;
+		}
+		oldPRScore = newPRScore;	
+		newPRScore = -1;
+		
 	}
+	public String toString() {
+		return "Name: " + name + ", Page Rank: " + oldPRScore;
+	}
+	//public LinkedList<PageRankNode> sort(LinkedList<PageRankNode> nodes){
+		
+		//return 
+	//}
 
 	public static void main(String[] args) throws FileNotFoundException {
 		//Create fileInputStream
 
 //scan file in
 			//scanner to read file
-		Scanner scanner = new Scanner(fileName);
+		Scanner scanner = new Scanner("temp.replace");
 			//shows that commas seperate values
 		scanner.useDelimiter(",");
 			//while there is stuff left to read
 
 		//define variables for while loop
-		String node1;
+		String stringNode1;
 		int value1;
-		String node2;
+		String stringNode2;
 		int value2;
-		LinkedList<PageRankNode> nodes;
+		LinkedList<PageRankNode> nodes = new LinkedList<PageRankNode>();
 		while(scanner.hasNext()) {
 				//increment total
-			int totalNodes += 1;
 				//find name of current node
-			node1 = scanner.next();
+			stringNode1 = scanner.next();
 			//gives first 0
-			value1 = scanner.next();
-			node2 = scanner.next();
-			value2 = scanner.next()
+			String tmp1 = scanner.next();
+			value1 = Integer.parseInt(tmp1);
+			stringNode2 = scanner.next();
+			String tmp2 = scanner.next();
+			value2 = Integer.parseInt(tmp2);
+			PageRankNode node1 = new PageRankNode(stringNode1);
+			PageRankNode node2 = new PageRankNode(stringNode2);
 			//if node already exists
-			if(nodes.contains(node1)){
+			if(!(nodes.contains(node2))){
 				//add connection to node (possibly double sided?)
 				//if 2 sided
-				node1.addConnection(node2);
-
-				if(value1 == value2 && nodes.contains(node2)) node2.addConnection(node1);
-				else if (value1 == value2) {
-					//create node2
-
-					//connect node2 to node1
-					node2.addConnection(node1);
-				}
-				else; //do nothing
+				nodes.add(node2);
 			}
-
+			if (!(nodes.contains(node1))) {
+				nodes.add(node1);
+			}
+			node2.addConnection(node1);
+			node1.numOutgoing += 1;
+			if(value1 == value2) {
+				node1.addConnection(node2);
+				node2.numOutgoing += 1;
+			}
+		}//end while 
+		for(int i = 0; i < nodes.size(); i++) {
+			nodes.get(i).startStep(nodes.size());
 		}
-			//else
-				//create node, add connection(Double sided?)
+		boolean allRepeat = false;
+		int steps = 0;
+		while(!(allRepeat) && (steps<101)) {
+			steps += 1;
+			for(int i = 0; i < nodes.size(); i++) {
+				nodes.get(i).pageRankStep(nodes.size());
+			}
+			for(int i = 0; i < nodes.size(); i++) {
+				nodes.get(i).endStep();
+			}
+			int accum = 0;
+			for(int i = 0; i <nodes.size(); i++) {
+				if(nodes.get(i).repeating) {
+					accum +=1;
+				}
+			}
+			if(accum == nodes.size()) {
+				allRepeat = true;
+			}
+		}//end while
+		scanner.close();
+		//LinkedList<PageRankNode> sortedNodes = sort(nodes);
 	}
+	
 
 		//Every 4 values is 	
 			//1st name
@@ -119,5 +168,5 @@ public class PageRankNode { //we are doing a class now because Louis said so
 
 		//return thing if we need to
 		//happy swenson
-	}
 }
+
