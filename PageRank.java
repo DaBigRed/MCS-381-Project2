@@ -126,8 +126,10 @@ public class PageRankNode { //we are doing a class now because Louis said so
 		for(int i = 0; i < nodes.size(); i++) {
 			nodes.get(i).startStep(nodes.size());
 		}
+
 		boolean allRepeat = false;
 		int steps = 0;
+
 		while(!(allRepeat) && (steps<101)) {
 			steps += 1;
 			for(int i = 0; i < nodes.size(); i++) {
@@ -136,12 +138,20 @@ public class PageRankNode { //we are doing a class now because Louis said so
 			for(int i = 0; i < nodes.size(); i++) {
 				nodes.get(i).endStep();
 			}
+
+			//define an accumulator 
 			int accum = 0;
 			for(int i = 0; i <nodes.size(); i++) {
+
+				//if the old and new PR scores are the same, 
+				//accum is incrimented by one
 				if(nodes.get(i).repeating) {
 					accum +=1;
-				}
+				}	
 			}
+
+			//if all PR scores stayed the same, then set all repeat to
+			//true, which will break the loop
 			if(accum == nodes.size()) {
 				allRepeat = true;
 			}
@@ -169,4 +179,3 @@ public class PageRankNode { //we are doing a class now because Louis said so
 		//return thing if we need to
 		//happy swenson
 }
-
