@@ -86,10 +86,29 @@ what is this comment
 	public String toString() {
 		return "Name: " + name + ", Page Rank: " + oldPRScore;
 	}
-	//public LinkedList<PageRankNode> sort(LinkedList<PageRankNode> nodes){
+
+//here is sorting part
+
+	public static void sort(LinkedList<PageRankNode> nodes){
 		
-		//return 
-	//}
+		int size = nodes.size();
+		//for the swap
+		int temp;
+
+		//for each
+		for(int i = 0; i < size; i++){
+			//for each
+			for(int j = 1; j < (n - i); j++){
+				//if
+				if(nodes.get(j-1) > nodes.get(j)){
+					//swap
+					temp = nodes.get(j-1);
+					nodes.set(j-1, nodes.get(j));
+					nodes.set(j, temp);
+				}
+			}
+		}
+	}
 
 	public static void main(String[] args) throws FileNotFoundException {
 		
@@ -199,8 +218,8 @@ what is this comment
 
 		scanner.close();
 
-//need to work on sorting nodes
-		//LinkedList<PageRankNode> sortedNodes = sort(nodes);
+		sort(nodes);
+		System.out.println(nodes);
 
 		//get ending time
 		ending = System.currentTimeMillis();
@@ -208,8 +227,6 @@ what is this comment
 		System.out.println("Elapsed time: " + (ending - starting));
 	}
 	
-
-//we need to add timing mechanism too
 
 
 
