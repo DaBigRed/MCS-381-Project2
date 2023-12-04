@@ -1,7 +1,8 @@
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.LinkedList;
-import java.io.*;
+import java.io.File;
+import java.lang.*;
 
 public class PageRankNode { //we are doing a class now because Louis said so
 	//name of the thing (eg. Dolphin named "Double")
@@ -17,18 +18,12 @@ public class PageRankNode { //we are doing a class now because Louis said so
 	public boolean repeating;
 	//an int to keep track of # of outgoing links
 	public int numOutgoing;
-	/**
-	Reads a file from the input and creates a hashmap representation
-what is this comment
-	**/
+	
 	public PageRankNode(String name) {
 		/* makes 1 node which we will then connect */
 
 		//make name a global value
 		this.name = name;
-		//keep track of total nodes to make first page rank (1/total)
-//are we actually doing the above comment here? I don't think so.
-//we need to somewhere though
 		oldPRScore = -1;
 		newPRScore = -1;
 		repeating = false;
@@ -64,9 +59,7 @@ what is this comment
 		//turn numNodes into a float
 		numNodes += 0.0;
 		double dampAdd = 0.15/numNodes;
-
-//I think the 0.15 should be 0.85 according to the formula in the slides
-		double dampScore = dampAdd + 0.15*(incomScore);
+		double dampScore = dampAdd + 0.85*(incomScore);
 		oldPRScore = dampScore;
 	}
 
@@ -77,33 +70,30 @@ what is this comment
 			//make repeating true
 			repeating = true;
 		}
-		oldPRScore = newPRScore;	
-//why are we setting newPRScore to -1? this just overwrites the oldPR --> 
-//newPR movement in the line above
-		newPRScore = -1;
+		oldPRScore = newPRScore;
 		
 	}
 	public String toString() {
 		return "Name: " + name + ", Page Rank: " + oldPRScore;
 	}
 
-//here is sorting part
+	//here is sorting part
 
 	public static void sort(LinkedList<PageRankNode> nodes){
 		
 		int size = nodes.size();
 		//for the swap
-		int temp;
+		PageRankNode temp;
 
 		//for each
 		for(int i = 0; i < size; i++){
 			//for each
-			for(int j = 1; j < (n - i); j++){
+			for(int j = 1; j < (size - i); j++){
 				//if
-				if(nodes.get(j-1) > nodes.get(j)){
+				if(nodes.get(j-1).oldPRScore > nodes.get(j).oldPRScore){
 					//swap
 					temp = nodes.get(j-1);
-					nodes.set(j-1, nodes.get(j));
+					nodes.set(j-i, nodes.get(j));
 					nodes.set(j, temp);
 				}
 			}
@@ -113,13 +103,15 @@ what is this comment
 	public static void main(String[] args) throws FileNotFoundException {
 		
 		//record starting time
-		starting = System.currentTimeMillis();
+		double starting = System.currentTimeMillis();
 
 		//Create fileInputStream
-//scan file in
+		//scan file in
 		//scanner to read file
-		Scanner scanner = new Scanner("temp.replace");
-		//shows that commas seperate values
+		File file = new File("resources/dolphins.csv");
+		Scanner scanner = new Scanner(file);
+		
+		//shows that commas separate values
 		scanner.useDelimiter(",");
 
 		//define variables for while loop
@@ -130,11 +122,10 @@ what is this comment
 		LinkedList<PageRankNode> nodes = new LinkedList<PageRankNode>();
 
 		//while there is stuff left to read
-		while(scanner.hasNext()) {
-//increment total
-//What is the above comment mentioning?
+		while(scanner.hasNextLine()) {
 			//find name of current node
 			stringNode1 = scanner.next();
+			System.out.println(stringNode1);
 			//gives first 0
 			String tmp1 = scanner.next();
 			value1 = Integer.parseInt(tmp1);
@@ -170,7 +161,7 @@ what is this comment
 				node2.numOutgoing += 1;
 			}
 		}//end while 
-
+		scanner.close();
 		//do the start step for each node
 		for(int i = 0; i < nodes.size(); i++) {
 			nodes.get(i).startStep(nodes.size());
@@ -216,37 +207,14 @@ what is this comment
 			}
 		}//end while
 
-		scanner.close();
-
 		sort(nodes);
 		System.out.println(nodes);
 
 		//get ending time
-		ending = System.currentTimeMillis();
+		double ending = System.currentTimeMillis();
 		//print total time in milliseconds
 		System.out.println("Elapsed time: " + (ending - starting));
 	}
-	
-
-
-
-
-
-		//Every 4 values is 	
-			//1st name
-			//2nd 0 or 1
-			//3rd name2
-			//4th 0 or 1
-
-		//If doesnt already exists
-			//create pageRankNode for 1st name
-		//either way
-		//pageRankNode.addConnection(name2)
-
-		//while not over number of steps and while any node not repeating
-			//pageRankStep for all nodes
-			//EndStep for all nodes
-
-		//return thing if we need to
 		//happy swenson
 }
+
